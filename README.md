@@ -1,78 +1,72 @@
-# Sodiq Onawale - Frontend Developer Portfolio
+# Sodiq Onawale — Frontend Developer Portfolio
 
-A modern, responsive portfolio website built with React, TypeScript, and Material UI featuring a custom dark theme with vibrant orange accents.
+A responsive portfolio built with **React**, **TypeScript**, and **Material UI**, using a custom dark theme with orange accents, Framer Motion for motion, and **Vite** as the dev/build toolchain.
 
-## 🚀 Features
+## Features
 
-- **Modern Design**: Dark theme with gradient accents and glassmorphism effects
-- **Responsive Layout**: Optimized for all device sizes
-- **Smooth Animations**: Powered by Framer Motion for delightful interactions
-- **Custom MUI Theme**: Distinctive styling that stands out from generic designs
-- **Project Showcase**: Featuring real projects including the Bloganity blog app
+- **Layout & UX**: Sticky navigation, smooth section scrolling, mobile drawer, and a readable single-page flow (hero, about, projects, contact).
+- **Theming**: Central MUI theme (typography, palette, component overrides) plus global CSS for scrollbars and selection.
+- **Showcase**: Project cards with live and GitHub links, tech chips, and a featured slot for the primary project.
 
-## 🛠️ Tech Stack
+## Tech stack
 
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Material UI 5** - Component library with custom theme
-- **Framer Motion** - Animations
-- **Vite** - Build tool
+| Layer | Choice |
+|--------|--------|
+| UI | React 18, Material UI 5, Emotion |
+| Language | TypeScript |
+| Motion | Framer Motion |
+| Bundler | Vite |
 
-## 📦 Installation
+## Getting started
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm run dev      # dev server (default Vite URL in the terminal)
+npm run build    # production build
+npm run preview  # preview production build locally
 ```
 
-## 📂 Project Structure
+## Project structure
 
 ```
 src/
 ├── components/
-│   ├── Navbar.tsx      # Navigation with scroll effects
-│   ├── Hero.tsx        # Landing section with intro
-│   ├── About.tsx       # Skills and highlights
-│   ├── Projects.tsx    # Project showcase
-│   ├── Contact.tsx     # Contact form
-│   └── Footer.tsx      # Site footer
+│   ├── Navbar.tsx / Navbar.css   # Site nav + scroll behavior
+│   ├── Hero.tsx                  # Introduction
+│   ├── About.tsx                 # Skills & highlights
+│   ├── Projects.tsx              # Project list and links
+│   ├── Contact.tsx               # Contact form
+│   └── Footer.tsx
 ├── theme/
-│   └── theme.ts        # Custom MUI theme
-├── App.tsx             # Main app component
-├── main.tsx            # Entry point
-└── index.css           # Global styles
+│   └── theme.ts                 # MUI theme
+├── App.tsx / App.css
+├── main.tsx
+└── index.css
 ```
 
-## 🎨 Design Features
+## Design notes
 
-- **Typography**: Playfair Display for headings, Outfit for body text
-- **Color Palette**: 
-  - Primary: `#FF6B35` (Vibrant Orange)
-  - Secondary: `#1B998B` (Teal)
-  - Background: `#0D1B2A` (Deep Navy)
-- **Effects**: Subtle grid pattern, floating orbs, smooth hover transitions
+- **Typography**: Playfair Display (headings), Outfit (body).
+- **Palette**: Deep navy background (`#0D1B2A`), orange primary (`#FF6B35`), teal secondary (`#1B998B`).
+- **Chrome**: Grid backdrop, gradient orbs, elevated cards with hover polish.
 
-## 🔗 Featured Projects
+## Projects highlighted in this repo
 
-1. **[Bloganity](https://sodiqonawale.github.io/Bloganity/)** - A modern blog application
-2. Task Manager Pro - Productivity application
-3. Weather Dashboard - Weather visualization app
-4. E-Commerce UI - Shopping experience frontend
+The site links out to these builds (sources live in their own repositories):
 
-## 📧 Contact
+| Project | Live | Repository |
+|--------|------|------------|
+| **Bloganity** (featured) | [Demo](https://bloganity-r4kpblf1g-olamide-cybers-projects.vercel.app/) | [GitHub](https://github.com/sodiqOnawale/Bloganity) |
+| **Task Manager Pro** | [Demo](https://task-manager-pro-jet.vercel.app/) | [GitHub](https://github.com/sodiqOnawale/Task-Manager-Pro) |
+| **Weather Now** | [Demo](https://weather-app-nine-beta-55.vercel.app/) | [GitHub](https://github.com/sodiqOnawale/Weather-App) |
+| **E-Commerce UI** | [Demo](https://ecommerce-ui-three-eosin.vercel.app/) | [GitHub](https://github.com/sodiqOnawale/Ecommerce-ui) |
+| **Spotlight Talks** | [Demo](https://talks-kappa.vercel.app/) | [GitHub](https://github.com/sodiqOnawale/talks) |
 
-- **Email**: sodiqonawale@gmail.com
-- **GitHub**: [github.com/sodiqonawale](https://github.com/sodiqonawale)
+## Contact
+
+- **Email**: [sodiqonawale@gmail.com](mailto:sodiqonawale@gmail.com)
+- **GitHub**: [github.com/sodiqOnawale](https://github.com/sodiqOnawale)
 
 ---
 
-Built with ❤️ by Sodiq Onawale
+Built by Sodiq Onawale.

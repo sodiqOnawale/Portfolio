@@ -28,8 +28,8 @@ const projects: Project[] = [
     description: 'A productivity application for managing daily tasks with features like drag-and-drop, categories, due dates, and progress tracking.',
     image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&auto=format&fit=crop&q=60',
     technologies: ['React', 'TypeScript', 'Material UI', 'Local Storage'],
-    liveUrl: '#',
-    githubUrl: '#',
+    liveUrl: 'https://task-manager-pro-jet.vercel.app/',
+    githubUrl: 'https://github.com/sodiqOnawale/Task-Manager-Pro',
   },
   {
     title: 'Weather Now',
@@ -43,9 +43,18 @@ const projects: Project[] = [
     title: 'E-Commerce UI',
     description: 'A modern e-commerce frontend with product catalog, shopping cart, and checkout flow. Built with attention to user experience and conversion optimization.',
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format&fit=crop&q=60',
-    technologies: ['React', 'TypeScript', 'Styled Components', 'Framer Motion'],
-    liveUrl: '#',
-    githubUrl: '#',
+    technologies: ['React', 'TypeScript', 'Material UI', 'Webpack'],
+    liveUrl: 'https://ecommerce-ui-three-eosin.vercel.app/',
+    githubUrl: 'https://github.com/sodiqOnawale/Ecommerce-ui',
+  },
+  {
+    title: 'Spotlight Talks',
+    description:
+      'A conference-style talk catalog: browse sessions, filter by topic, search the library, and open detail pages with optional YouTube embeds. Built with the App Router and static generation.',
+    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=60',
+    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'App Router'],
+    liveUrl: 'https://talks-kappa.vercel.app/',
+    githubUrl: 'https://github.com/sodiqOnawale/talks',
   },
 ];
 
