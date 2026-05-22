@@ -7,6 +7,7 @@ A responsive portfolio built with **React**, **TypeScript**, and **Material UI**
 - **Layout & UX**: Sticky navigation, smooth section scrolling, mobile drawer, and a readable single-page flow (hero, about, projects, contact).
 - **Theming**: Central MUI theme (typography, palette, component overrides) plus global CSS for scrollbars and selection.
 - **Showcase**: Project cards with live and GitHub links, tech chips, and a featured slot for the primary project.
+- **Contact**: Message form powered by Formspree (see env setup below), plus email/location/social links.
 
 ## Tech stack
 
@@ -20,11 +21,21 @@ A responsive portfolio built with **React**, **TypeScript**, and **Material UI**
 ## Getting started
 
 ```bash
-npm install
-npm run dev      # dev server (default Vite URL in the terminal)
-npm run build    # production build
-npm run preview  # preview production build locally
+npm/yarn install      #install packages
+npm/yarn run dev      # dev server (default Vite URL in the terminal)
+npm/yarn run build    # production build
+npm/yarn run preview  # preview production build locally
 ```
+
+### Contact form (Formspree)
+
+Submissions use [Formspree](https://formspree.io). Create a form, copy your endpoint (`https://formspree.io/f/…`), then:
+
+1. Create an `.env` in the repo root (`.env` is gitignored).
+2. Set `VITE_FORMSPREE_URL` to that full URL.
+3. Restart `npm run dev`.
+
+For production (e.g. Vercel), add the same variable in the host’s environment UI as **`VITE_FORMSPREE_URL`**, then redeploy.
 
 ## Project structure
 

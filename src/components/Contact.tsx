@@ -9,6 +9,7 @@ import {
   Stack,
   Alert,
   Snackbar,
+  CircularProgress,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import EmailIcon from '@mui/icons-material/Email';
@@ -17,12 +18,33 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import SendIcon from '@mui/icons-material/Send';
 
+const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_URL?.trim() ?? '';
+
+const textFieldSx = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 2,
+    '& fieldset': {
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(255, 107, 53, 0.3)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#FF6B35',
+    },
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#FF6B35',
+  },
+} as const;
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
+  const [submitting, setSubmitting] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -30,22 +52,71 @@ const Contact = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // In a real app, you would send the form data to a backend
-    console.log('Form submitted:', formData);
-    setSnackbar({
-      open: true,
-      message: 'Message sent successfully! I\'ll get back to you soon.',
-      severity: 'success',
-    });
-    setFormData({ name: '', email: '', message: '' });
+
+    if (!FORMSPREE_URL) {
+      setSnackbar({
+        open: true,
+        message:
+          'Contact form is not configured. Add VITE_FORMSPREE_URL to your .env file (see .env.example).',
+        severity: 'error',
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const body = new FormData(e.currentTarget);
+      const name = String(body.get('name') ?? '').trim();
+      const email = String(body.get('email') ?? '').trim();
+      const message = String(body.get('message') ?? '').trim();
+      if (!name || !email || !message) {
+        setSnackbar({
+          open: true,
+          message: 'Please fill in all fields before sending.',
+          severity: 'error',
+        });
+        return;
+      }
+
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        body,
+        headers: { Accept: 'application/json' },
+      });
+
+      const data: { ok?: boolean; error?: string; errors?: unknown } = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        setSnackbar({
+          open: true,
+          message: 'Thanks — your message was sent. I will get back to you soon.',
+          severity: 'success',
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        const detail =
+          typeof data.error === 'string'
+            ? data.error
+            : 'Something went wrong sending your message. Please try again or email me directly.';
+        setSnackbar({ open: true, message: detail, severity: 'error' });
+      }
+    } catch {
+      setSnackbar({
+        open: true,
+        message: 'Network error — check your connection or try emailing me directly.',
+        severity: 'error',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -65,8 +136,19 @@ const Contact = () => {
 
   const socials = [
     { icon: <GitHubIcon />, href: 'https://github.com/sodiqonawale', label: 'GitHub' },
-    { icon: <LinkedInIcon />, href: 'https://www.linkedin.com/in/sodiq-onawale-4a548a339/', label: 'LinkedIn' },
+    {
+      icon: <LinkedInIcon />,
+      href: 'https://www.linkedin.com/in/sodiq-onawale-4a548a339/',
+      label: 'LinkedIn',
+    },
   ];
+
+  const allFieldsFilled =
+    formData.name.trim().length > 0 &&
+    formData.email.trim().length > 0 &&
+    formData.message.trim().length > 0;
+
+  const sendDisabled = submitting || !FORMSPREE_URL || !allFieldsFilled;
 
   return (
     <Box
@@ -77,7 +159,6 @@ const Contact = () => {
         position: 'relative',
       }}
     >
-      {/* Background Accent */}
       <Box
         sx={{
           position: 'absolute',
@@ -93,7 +174,6 @@ const Contact = () => {
       />
 
       <Container maxWidth="lg">
-        {/* Section Header */}
         <Box
           component={motion.div}
           initial={{ opacity: 0, y: 30 }}
@@ -116,7 +196,7 @@ const Contact = () => {
             Get In Touch
           </Typography>
           <Typography variant="h2" sx={{ mb: 3 }}>
-            Let's Work{' '}
+            Let&apos;s Work{' '}
             <Box
               component="span"
               sx={{
@@ -138,21 +218,22 @@ const Contact = () => {
               fontSize: '1.125rem',
             }}
           >
-            Have a project in mind or want to discuss opportunities? 
-            I'd love to hear from you. Let's create something amazing!
+            Send a message through the form — it delivers via{' '}
+            <Box component="span" sx={{ color: 'text.primary' }}>
+              Formspree
+            </Box>
+            . You can also reach me by email anytime.
           </Typography>
         </Box>
 
         <Grid container spacing={6}>
-          {/* Contact Form */}
           <Grid item xs={12} md={7}>
             <Box
-              component={motion.form}
+              component={motion.div}
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              onSubmit={handleSubmit}
               sx={{
                 p: { xs: 3, md: 5 },
                 borderRadius: 4,
@@ -161,103 +242,84 @@ const Contact = () => {
                 backdropFilter: 'blur(10px)',
               }}
             >
-              <Stack spacing={3}>
-                <TextField
-                  fullWidth
-                  label="Your Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 107, 53, 0.3)',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#FF6B35',
-                      },
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: '#FF6B35',
-                    },
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Your Email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 107, 53, 0.3)',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#FF6B35',
-                      },
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: '#FF6B35',
-                    },
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Your Message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  multiline
-                  rows={5}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      '& fieldset': {
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: 'rgba(255, 107, 53, 0.3)',
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: '#FF6B35',
-                      },
-                    },
-                    '& .MuiInputLabel-root.Mui-focused': {
-                      color: '#FF6B35',
-                    },
-                  }}
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  endIcon={<SendIcon />}
-                  sx={{
-                    py: 1.5,
-                    alignSelf: 'flex-start',
-                    px: 5,
-                  }}
-                >
-                  Send Message
-                </Button>
-              </Stack>
+              {!FORMSPREE_URL && (
+                <Alert severity="warning" sx={{ mb: 3 }}>
+                  Add <code style={{ wordBreak: 'break-all' }}>VITE_FORMSPREE_URL</code> to a{' '}
+                  <code>.env</code> file (copy <code>.env.example</code>). Restart{' '}
+                  <code>npm run dev</code> after saving.
+                </Alert>
+              )}
+
+              <Box component="form" onSubmit={handleSubmit} noValidate>
+                {/* Honeypot — bots only; kept empty by real visitors */}
+                <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" style={{ display: 'none' }} />
+
+                <Stack spacing={3}>
+                  <TextField
+                    fullWidth
+                    label="Your Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    disabled={submitting}
+                    sx={textFieldSx}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Your Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    disabled={submitting}
+                    sx={textFieldSx}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Your Message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    disabled={submitting}
+                    multiline
+                    rows={5}
+                    sx={textFieldSx}
+                  />
+                  <Box
+                    sx={{
+                      alignSelf: 'flex-start',
+                      display: 'inline-flex',
+                      cursor: sendDisabled ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      disabled={sendDisabled}
+                      endIcon={
+                        submitting ? <CircularProgress size={20} color="inherit" /> : <SendIcon />
+                      }
+                      sx={{
+                        py: 1.5,
+                        px: 5,
+                        '&.Mui-disabled': {
+                          cursor: 'not-allowed',
+                          pointerEvents: 'none',
+                        },
+                      }}
+                    >
+                      {submitting ? 'Sending…' : 'Send message'}
+                    </Button>
+                  </Box>
+                </Stack>
+              </Box>
             </Box>
           </Grid>
 
-          {/* Contact Info */}
           <Grid item xs={12} md={5}>
             <Box
               component={motion.div}
@@ -283,9 +345,11 @@ const Contact = () => {
                       textDecoration: 'none',
                       color: 'inherit',
                       transition: 'all 0.3s ease',
-                      '&:hover': info.href ? {
-                        color: '#FF6B35',
-                      } : {},
+                      '&:hover': info.href
+                        ? {
+                            color: '#FF6B35',
+                          }
+                        : {},
                     }}
                   >
                     <Box
@@ -361,17 +425,18 @@ const Contact = () => {
 
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        autoHideDuration={8000}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
           severity={snackbar.severity}
           sx={{
-            background: snackbar.severity === 'success'
-              ? 'linear-gradient(135deg, #1B998B 0%, #147A6F 100%)'
-              : undefined,
+            background:
+              snackbar.severity === 'success'
+                ? 'linear-gradient(135deg, #1B998B 0%, #147A6F 100%)'
+                : undefined,
             color: 'white',
           }}
         >
@@ -383,4 +448,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
